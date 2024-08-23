@@ -16,7 +16,8 @@ class PaymentWidget extends StatefulWidget {
   BuildContext? loadingDialogContext;
   SnackBar? snackBar;
 
-  PaymentWidget({required this.request, required this.style, required this.mainContext});
+  PaymentWidget(
+      {required this.request, required this.style, required this.mainContext});
 
   @override
   State<StatefulWidget> createState() => _PaymentState();
@@ -58,7 +59,7 @@ class _PaymentState extends State<PaymentWidget>
               autofocus: true,
               onPressed: _handleButtonClicked,
               style: ElevatedButton.styleFrom(
-                  primary: widget.style.getButtonColor(),
+                  backgroundColor: widget.style.getButtonColor(),
                   textStyle: widget.style.getButtonTextStyle()),
               child: Text(
                 widget.style.getButtonText(),

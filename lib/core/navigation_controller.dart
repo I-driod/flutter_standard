@@ -19,12 +19,11 @@ class NavigationController {
   startTransaction(final StandardRequest request) async {
     try {
       final StandardResponse standardResponse =
-      await request.execute(this.client);
+          await request.execute(this.client);
       if (standardResponse.status == "error") {
         throw (TransactionError(standardResponse.message!));
       }
-      openBrowser(
-          standardResponse.data?.link ?? "", request.redirectUrl);
+      openBrowser(standardResponse.data?.link ?? "", request.redirectUrl);
     } catch (error) {
       print("error is $error");
       throw (error);
@@ -32,20 +31,37 @@ class NavigationController {
   }
 
   /// Opens browser with URL returned from startTransaction()
+
   openBrowser(
-      final String url, final String redirectUrl,
-      [final bool isTestMode = false]) async {
+    String url,
+    String redirectUrl, [
+    bool isTestMode = false,
+  ]) async {
     final FlutterwaveInAppBrowser browser =
         FlutterwaveInAppBrowser(callBack: _callBack);
 
-    var options = InAppBrowserClassOptions(
-      crossPlatform: InAppBrowserOptions(hideUrlBar: true),
-      inAppWebViewGroupOptions: InAppWebViewGroupOptions(
-        crossPlatform: InAppWebViewOptions(javaScriptEnabled: true),
-      ),
+    // Convert the URL to WebUri
+    WebUri webUri = WebUri(url);
+
+    // Define browser settings and web view settings
+    var browserSettings = InAppBrowserSettings(
+      hideUrlBar: true,
     );
 
+    var webViewSettings = InAppWebViewSettings(
+      javaScriptEnabled: true,
+    );
+
+    // Combine settings into InAppBrowserClassSettings
+    var settings = InAppBrowserClassSettings(
+      browserSettings: browserSettings,
+      webViewSettings: webViewSettings,
+    );
+
+    // Open the URL using the combined settings
     await browser.openUrlRequest(
-        urlRequest: URLRequest(url: Uri.parse(url)), options: options);
+      urlRequest: URLRequest(url: webUri),
+      settings: settings,
+    );
   }
 }
